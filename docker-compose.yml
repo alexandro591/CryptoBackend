@@ -1,0 +1,28 @@
+version: '3.5'
+
+networks:
+  CryptoNetwork:
+    external: true
+
+services:
+  backend:
+    working_dir: /cryptobackend
+    container_name: 'cryptobackend'
+    build: .
+    image: 'cryptobackend'
+    networks:
+      CryptoNetwork:
+        ipv4_address: 10.20.20.2
+    ports:
+      - '8001:8001'
+
+    command: >
+      bash -c "echo \"alias RUNSERVER='python manage.py runserver 0.0.0.0:8001'\" >> ~/.bashrc &&
+      echo \"alias MIGRATE='python manage.py migrate'\" >> ~/.bashrc &&
+      echo \"alias MAKEMIGRATIONS='python manage.py makemigrations'\" >> ~/.bashrc &&
+      echo \"alias SHELL='python manage.py shell'\" >> ~/.bashrc &&
+      sleep infinity"
+    volumes:
+      - ./app:/cryptobackend
+    tty: true
+    restart: always
