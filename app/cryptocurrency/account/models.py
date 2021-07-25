@@ -12,7 +12,6 @@ class Account(models.Model):
     blank=True,
     unique=True,
   )
-  name = models.TextField(null=False, blank=False, unique=True, editable=False)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
   
@@ -22,7 +21,6 @@ class Account(models.Model):
       "id": self.pk,
       "uuid": str(self.uuid),
       # "user": model_to_dict(self.user) if self.user else None,
-      "name": self.name,
       "created_at": str(self.created_at),
       "updated_at": str(self.updated_at),
     }

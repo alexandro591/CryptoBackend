@@ -5,6 +5,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-krc%-xxthes+astbapm@(v4d5s#ea@s%b6oe0q(@(0e*^n8=lh'
 DEBUG = True
 ALLOWED_HOSTS = ['10.20.20.2', 'local.crypto.com', 'localhost']
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
+]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -78,6 +82,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated', )
 }
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -85,10 +90,8 @@ USE_L10N = True
 USE_TZ = True
 STATIC_URL = '/app/api/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CREATOR_NAME = "Alexandro"
-GENESIS_NAME = "CryptoGenesis"
-SUPERADMIN_USER = "cryptoadmin"
-SUPERADMIN_EMAIL = "cryptoadmin@cryptoadmin.com"
-SUPERADMIN_PASSWORD = "cryptoadmin"
+SUPERADMIN_EMAIL = "alexandrotapiaflores@gmail.com"
+SUPERADMIN_PASSWORD = "123456"
 RSA_BITS = 2048
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_ALL_ORIGINS = True

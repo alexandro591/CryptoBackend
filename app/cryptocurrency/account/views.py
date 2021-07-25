@@ -1,4 +1,4 @@
-from rest_framework.views import APIView
-class AccountAuth(APIView):
+from django.views import View
+class AccountAuth(View):
   def get(request):
     pass

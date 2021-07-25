@@ -10,7 +10,6 @@ from django.db.models import Sum
 from cryptocurrency.account.models import Account
 import uuid
 from fernet_fields import EncryptedTextField
-from rest_framework.authtoken.models import Token
 from colorama import Fore, Style
 import traceback
 
@@ -53,8 +52,8 @@ class Wallet(models.Model):
       self.private_key = key.exportKey('PEM').decode('utf-8')
       super().save(*args, **kwargs)
 
-  def sendMoney(self, amount, receiver):
-    if (self.balance or 0)>=amount or self == Wallet.objects.get(account__name=settings.GENESIS_NAME):
+  def send_money(self, amount, receiver):
+    if (self.balance or 0)>=amount or self == Wallet.objects.get(account__user__isnull=True):
       transaction = Transaction(amount = amount, sender = self, receiver = receiver);
       private_key = RSA.import_key(self.private_key)
       transaction_hash = SHA256.new(json.dumps(transaction.to_dict).encode('utf8'))
@@ -104,7 +103,7 @@ class Transaction(models.Model):
       previous_hash = Block.objects.filter().last().hash if Block.objects.filter().last() else None
       new_block = Block(previous_hash = previous_hash, transaction = self);
       
-      if(self.sender == Wallet.objects.get(account__name=settings.GENESIS_NAME)):
+      if self.sender == Wallet.objects.get(account__user__isnull=True):
         self.status = self.STATUS_CHOICES.COMPLETED
       
       super().save(*args)

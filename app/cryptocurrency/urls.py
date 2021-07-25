@@ -1,9 +1,8 @@
 from django.contrib import admin
-from django.urls import path, include
-from rest_framework.authtoken.views import obtain_auth_token
+from django.urls import re_path, include
 
 urlpatterns = [
-    path('admin', admin.site.urls),
-    path('chain/', include("cryptocurrency.blockchain.urls")),
-    path('auth', obtain_auth_token),
+    re_path(r'admin/?', admin.site.urls),
+    re_path(r'chain/', include("cryptocurrency.blockchain.urls")),
+    re_path(r'auth/', include("cryptocurrency.auth.urls")),
 ]

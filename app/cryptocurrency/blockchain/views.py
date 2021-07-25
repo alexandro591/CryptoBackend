@@ -1,13 +1,13 @@
 from cryptocurrency.blockchain.models import Transaction, Block, Wallet
 from django.contrib.auth.models import User
 from cryptocurrency.account.models import Account
-from rest_framework.views import APIView
 from django.views import View
 from django.http import JsonResponse
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 from colorama import Fore, Style
 import traceback
+from cryptocurrency.utils.restapi import rest_api_decorator
 
 class Chain:
   def __init__(self):
@@ -17,21 +17,18 @@ class Chain:
     blocks = Block.objects.filter()
     
     if(transactions.count() == 0 or blocks.count() == 0):
-      GENESIS_NAME = settings.GENESIS_NAME
-      CREATOR_NAME = settings.CREATOR_NAME
-      
       try:
-        superuser = User.objects.get(username=settings.SUPERADMIN_USER)
+        superuser = User.objects.get(username=settings.SUPERADMIN_EMAIL)
       except:
-        superuser = User.objects.create_superuser(settings.SUPERADMIN_USER, settings.SUPERADMIN_EMAIL, settings.SUPERADMIN_PASSWORD)
+        superuser = User.objects.create_superuser(settings.SUPERADMIN_EMAIL, settings.SUPERADMIN_EMAIL, settings.SUPERADMIN_PASSWORD)
       
-      genesis_account, _ = Account.objects.get_or_create(name=GENESIS_NAME)
-      creator_account, _ = Account.objects.get_or_create(name=CREATOR_NAME, user=superuser)
+      genesis_account, _ = Account.objects.get_or_create()
+      creator_account, _ = Account.objects.get_or_create(user=superuser)
       
       genesis_wallet, _ = Wallet.objects.get_or_create(account = genesis_account)
       creator_wallet, _ = Wallet.objects.get_or_create(account = creator_account)
       
-      genesis_wallet.sendMoney(100, creator_wallet)
+      genesis_wallet.send_money(100, creator_wallet)
   
   # def genesis_wallet(self):
   
@@ -62,6 +59,8 @@ except Exception:
   chain = None
 
 class ChainView(View):
+  
+  @rest_api_decorator
   def get(self, request):
     global chain
     if(chain == None):
@@ -72,7 +71,9 @@ class ChainView(View):
     })
     
 
-class ChainUserView(APIView):
+class ChainUserView(View):
+  
+  @rest_api_decorator
   def get(self, request):
     token = request.META.get("HTTP_AUTHORIZATION")[7:]
     user = Token.objects.get(key=token).user.account
